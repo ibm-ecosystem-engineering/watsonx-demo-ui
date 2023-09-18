@@ -6,7 +6,7 @@ import {Button, Checkbox, FileUploader, Form, TextInput} from "@carbon/react";
 import {default as setValue} from "set-value";
 
 import './KYCCaseReview.scss';
-import {CountrySelect, Stack} from "../../../../components";
+import {CountrySelect, EntityTypeSelect, IndustryTypeSelect, Stack} from "../../../../components";
 import {createEmptyReviewCase, KycCaseModel, ReviewCaseModel} from "../../../../models";
 import {kycCaseManagementApi} from "../../../../services";
 import {fileListUtil} from "../../../../utils";
@@ -91,14 +91,17 @@ export const KYCCaseReview: React.FunctionComponent<KYCCaseReviewProps> = (props
                 readOnly={true}
                 style={{marginBottom: '20px'}}
             />
-            <TextInput
-                helperText="The current risk category of the customer"
-                id="caseCustomerRiskCategory"
-                invalidText="Invalid risk category"
-                labelText="Current risk category"
-                placeholder="Risk category"
-                value={props.currentCase.customer.riskCategory}
-                readOnly={true}
+            <EntityTypeSelect
+                id="caseCustomerEntityType"
+                value={props.currentCase.customer.entityType}
+                onChange={handleChange('entityType')}
+                required={true}
+            />
+            <IndustryTypeSelect
+                id="caseCustomerIndustryType"
+                value={props.currentCase.customer.industryType}
+                onChange={handleChange('industryType')}
+                required={true}
             />
             <div style={{margin: '10px 0'}}>
                 <Checkbox

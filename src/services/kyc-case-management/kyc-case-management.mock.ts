@@ -11,7 +11,8 @@ const initialValue: KycCaseModel[] = [
             name: 'John Doe',
             countryOfResidence: 'US',
             personalIdentificationNumber: '123458690',
-            riskCategory: 'Low'
+            entityType: '02',
+            industryType: '92.00',
         },
         status: 'New',
         documents: [],
@@ -22,7 +23,8 @@ const initialValue: KycCaseModel[] = [
             name: 'Jane Doe',
             countryOfResidence: 'CA',
             personalIdentificationNumber: 'AB1458690',
-            riskCategory: 'Low'
+            entityType: '03',
+            industryType: '10.82/2',
         },
         status: 'New',
         documents: [],

@@ -17,7 +17,8 @@ export interface PersonModel {
 
 export interface CustomerModel extends PersonModel {
     personalIdentificationNumber: string;
-    riskCategory: string;
+    industryType: string;
+    entityType: string;
 }
 
 export interface DocumentModel {
@@ -55,7 +56,8 @@ export const createEmptyCase = (): KycCaseModel => {
             name: '',
             countryOfResidence: 'US',
             personalIdentificationNumber: '',
-            riskCategory: ''
+            industryType: '',
+            entityType: '',
         },
         status: 'New',
         documents: [],
@@ -66,8 +68,9 @@ export const createEmptyCustomer = (): CustomerModel => {
     return {
         name: '',
         countryOfResidence: 'US',
-        riskCategory: 'Low',
         personalIdentificationNumber: '',
+        industryType: '',
+        entityType: ''
     }
 }
 

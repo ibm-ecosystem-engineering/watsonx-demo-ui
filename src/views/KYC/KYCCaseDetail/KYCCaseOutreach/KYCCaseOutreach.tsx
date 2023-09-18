@@ -70,15 +70,6 @@ export const KYCCaseOutreach: React.FunctionComponent<KYCCaseReviewProps> = (pro
                     readOnly={true}
                     style={{marginBottom: '20px'}}
                 />
-                <TextInput
-                    helperText="The current risk category of the customer"
-                    id="caseCustomerRiskCategory"
-                    invalidText="Invalid risk category"
-                    labelText="Current risk category"
-                    placeholder="Risk category"
-                    value={props.currentCase.customer.riskCategory}
-                    readOnly={true}
-                />
                 <div style={{margin: '10px 0'}}>
                     <Checkbox
                         id="caseCustomerOutreach"
