@@ -29,9 +29,31 @@ export interface SpecificAtomSelectProps {
     style?: CSSProperties;
 }
 
+const loadFormItems = (loadable: Loadable<Promise<FormOptionModel[]>>): FormOptionModel[] => {
+    const items: FormOptionModel[] = loadable.state === 'hasData'
+        ? loadable.data
+        : [];
+
+    return items
+        .filter(item => item.value !== null)
+        .filter(item => item.text !== undefined)
+        .filter(item => item.value !== 'null')
+        .filter(item => item.text !== 'undefined')
+}
+
 export const AtomSelect: React.FunctionComponent<AtomSelectProps> = (props: AtomSelectProps) => {
 
-    const items: FormOptionModel[] = props.loadable.state === 'hasData' ? props.loadable.data : [];
+    const items: FormOptionModel[] = loadFormItems(props.loadable);
+
+    const buildSelectItem = (option: FormOptionModel) => {
+        const key = `${props.id}-${option.value}`;
+
+        if (option.value === null || option.value === 'null') {
+            console.log('Option: ', Object.assign({}, option, {key}));
+        }
+
+        return (<SelectItem key={key} text={option.text} value={option.value} />)
+    }
 
     return (
         <Select
@@ -46,7 +68,7 @@ export const AtomSelect: React.FunctionComponent<AtomSelectProps> = (props: Atom
             className={props.className}
             style={props.style}
         >
-            {items.map(option => <SelectItem key={option.value} text={option.text} value={option.value} />)}
+            {items.map(buildSelectItem)}
         </Select>
     )
 }

@@ -1,3 +1,5 @@
+import * as Stream from "stream";
+
 export interface KycCaseModel {
     id: string;
     status: string;
@@ -8,6 +10,7 @@ export interface KycCaseModel {
     negativeScreening?: NegativeScreeningModel;
     counterpartyNegativeScreening?: NegativeScreeningModel;
     customerRiskAssessment?: CustomerRiskAssessmentModel;
+    caseSummary?: KycCaseSummaryModel;
 }
 
 export interface PersonModel {
@@ -21,18 +24,20 @@ export interface CustomerModel extends PersonModel {
     entityType: string;
 }
 
-export interface DocumentModel {
+export interface DocumentModel extends DocumentInputModel {
     id: string;
-    name: string;
-    path: string;
+    content: Buffer;
 }
 
 export interface NegativeScreeningModel {
     result: string;
+    error?: string;
 }
 
 export interface CustomerRiskAssessmentModel {
-    result: string;
+    rating: string;
+    score: number;
+    error?: string;
 }
 
 export interface ReviewCaseModel {
@@ -48,20 +53,38 @@ export interface ApproveCaseModel {
     documents: DocumentModel[];
 }
 
+export interface KycCaseSummaryModel {
+    summary: string;
+    error?: string;
+}
 
-export const createEmptyCase = (): KycCaseModel => {
-    return {
-        id: 'new',
-        customer: {
-            name: '',
-            countryOfResidence: 'US',
-            personalIdentificationNumber: '',
-            industryType: '',
-            entityType: '',
-        },
-        status: 'New',
-        documents: [],
-    }
+export interface DocumentRef {
+    url: string;
+}
+
+export const isDocumentRef = (val: unknown): val is DocumentRef => {
+    return !!val && !!(val as {url: string}).url;
+}
+
+export interface DocumentContent {
+    content: Buffer;
+}
+
+export const isDocumentContent = (val: unknown): val is DocumentContent => {
+    return !!val && !!(val as {content: unknown}).content;
+}
+
+export interface DocumentStream {
+    stream: Stream;
+}
+
+export const isDocumentStream = (val: unknown): val is DocumentStream => {
+    return !!val && !!(val as {stream: unknown}).stream;
+}
+
+export interface DocumentInputModel {
+    name: string;
+    path: string;
 }
 
 export const createEmptyCustomer = (): CustomerModel => {
@@ -70,7 +93,16 @@ export const createEmptyCustomer = (): CustomerModel => {
         countryOfResidence: 'US',
         personalIdentificationNumber: '',
         industryType: '',
-        entityType: ''
+        entityType: '',
+    }
+}
+
+export const createEmptyCase = (): KycCaseModel => {
+    return {
+        id: 'new',
+        customer: createEmptyCustomer(),
+        status: 'New',
+        documents: [],
     }
 }
 
@@ -82,7 +114,6 @@ export const createNewCase = (customer: CustomerModel): KycCaseModel => {
         documents: [],
     }
 }
-
 export const createEmptyReviewCase = (id: string): ReviewCaseModel => {
     return {
         id,
@@ -101,4 +132,8 @@ export const createEmptyApproveCase = (id: string): ApproveCaseModel => {
         customerOutreach: 'Completed',
         documents: []
     }
+}
+
+export interface DocumentedCase {
+    documents: DocumentModel[];
 }
