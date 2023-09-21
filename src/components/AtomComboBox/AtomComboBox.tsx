@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import React, {CSSProperties} from 'react';
-import {ComboBox} from "@carbon/react";
+import {ComboBox, TextInput} from "@carbon/react";
 import {Loadable} from "jotai/vanilla/utils/loadable";
 
 import {FormOptionModel} from "../../models";
@@ -54,6 +54,19 @@ export const AtomComboBox: React.FunctionComponent<AtomComboBoxProps> = (props: 
 
     const filterItems = (item) => {
         return item?.item?.value?.toLowerCase().includes(item?.inputValue?.toLowerCase());
+    }
+
+    if (props.readOnly) {
+        return (
+            <TextInput
+                id={props.id}
+                labelText={props.labelText}
+                style={props.style}
+                className={props.className}
+                readOnly={props.readOnly}
+                value={selectedItem?.text || ''}
+            />
+        )
     }
 
     return (

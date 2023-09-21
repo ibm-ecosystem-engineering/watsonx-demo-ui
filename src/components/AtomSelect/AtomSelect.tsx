@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import React, {ChangeEvent, CSSProperties} from 'react';
-import {Select, SelectItem} from "@carbon/react";
+import {Select, SelectItem, TextInput} from "@carbon/react";
 import {Loadable} from "jotai/vanilla/utils/loadable";
 
 import {FormOptionModel} from "../../models";
@@ -46,6 +46,9 @@ export const AtomSelect: React.FunctionComponent<AtomSelectProps> = (props: Atom
 
     const items: FormOptionModel[] = loadFormItems(props.loadable);
 
+    const selectedItem = first(items.filter(item => item.value === props.value))
+        .orElseGet(() => items.length > 0 ? items[0] : undefined)
+
     const buildSelectItem = (option: FormOptionModel) => {
         const key = `${props.id}-${option.value}`;
 
@@ -66,6 +69,19 @@ export const AtomSelect: React.FunctionComponent<AtomSelectProps> = (props: Atom
         if (props.onChange) {
             props.onChange({selectedItem})
         }
+    }
+
+    if (props.readOnly) {
+        return (
+            <TextInput
+                id={props.id}
+                labelText={props.labelText}
+                style={props.style}
+                className={props.className}
+                readOnly={props.readOnly}
+                value={selectedItem?.text || ''}
+            />
+        )
     }
 
     return (

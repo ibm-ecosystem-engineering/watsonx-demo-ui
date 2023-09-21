@@ -14,8 +14,8 @@ export const IndustryTypeSelect: React.FunctionComponent<SpecificAtomComboBoxPro
     return (
         <AtomComboBox
             id={props.id}
-            invalidText="Invalid industry type selected"
-            labelText="Industry type"
+            invalidText={'Invalid industry type selected'}
+            labelText={'Industry type'}
             value={props.value}
             onChange={props.onChange}
             required={props.required}
