@@ -22,6 +22,8 @@ export abstract class KycCaseManagementApi {
     abstract reviewCase(input: ReviewCaseModel): Promise<KycCaseModel>;
     abstract approveCase(input: ApproveCaseModel): Promise<KycCaseModel>;
     abstract processCase(id: string): Promise<KycCaseModel>;
+    abstract deleteCase(id: string): Promise<KycCaseModel>;
+    abstract watchCase(id: string): Observable<KycCaseModel>;
 }
 
 export class CaseNotFound extends Error {

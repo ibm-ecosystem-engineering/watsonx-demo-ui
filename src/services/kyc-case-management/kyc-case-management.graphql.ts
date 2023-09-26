@@ -64,7 +64,7 @@ const LIST_CASES = gql`
     }
 `
 const CASES_SUBSCRIPTION = gql`
-    subscription { 
+    subscription CasesSubscription { 
         subscribeToCases {
             id
             status
@@ -209,6 +209,104 @@ const GET_CASE = gql`
         }
     }
 `
+const WATCH_CASE = gql`
+    subscription WatchCase($id:ID!) {
+        watchCase(id:$id) {
+            id
+            status
+            customer {
+                name
+                countryOfResidence
+                entityType
+                industryType
+            }
+            documents {
+                id
+                name
+                path
+            }
+            customerOutreach
+            counterparty {
+                name
+                countryOfResidence
+            }
+            negativeScreening {
+                summary
+                error
+                totalScreened
+                unrelatedNewsCount
+                nonNegativeNewsCount
+                negativeNewsCount
+                unrelatedNews {
+                    date
+                    title
+                    link
+                    summary
+                    negativeNewsTopics
+                    hasNegativeNews
+                }
+                nonNegativeNews {
+                    date
+                    title
+                    link
+                    summary
+                    negativeNewsTopics
+                    hasNegativeNews
+                }
+                negativeNews {
+                    date
+                    title
+                    link
+                    summary
+                    negativeNewsTopics
+                    hasNegativeNews
+                }
+            }
+            counterpartyNegativeScreening {
+                summary
+                error
+                totalScreened
+                unrelatedNewsCount
+                nonNegativeNewsCount
+                negativeNewsCount
+                unrelatedNews {
+                    date
+                    title
+                    link
+                    summary
+                    negativeNewsTopics
+                    hasNegativeNews
+                }
+                nonNegativeNews {
+                    date
+                    title
+                    link
+                    summary
+                    negativeNewsTopics
+                    hasNegativeNews
+                }
+                negativeNews {
+                    date
+                    title
+                    link
+                    summary
+                    negativeNewsTopics
+                    hasNegativeNews
+                }
+            }
+            customerRiskAssessment {
+                score
+                rating
+                error
+            }
+            caseSummary {
+                summary
+                error
+            }
+        }
+    }
+`
+
 const CREATE_CASE = gql`
     mutation CreateCase($customer:CustomerInput!) { 
         createCase(customer:$customer) {
@@ -335,6 +433,47 @@ const APPROVE_CASE = gql`
 const REVIEW_CASE = gql`
     mutation ReviewCase($case: ReviewCaseInput!) { 
         reviewCase(case: $case) {
+            id
+            status
+            customer {
+                name
+                countryOfResidence
+                entityType
+                industryType
+            }
+            documents {
+                id
+                name
+                path
+            }
+            customerOutreach
+            counterparty {
+                name
+                countryOfResidence
+            }
+            negativeScreening {
+                summary
+                error
+            }
+            counterpartyNegativeScreening {
+                summary
+                error
+            }
+            customerRiskAssessment {
+                score
+                rating
+                error
+            }
+            caseSummary {
+                summary
+                error
+            }
+        }
+    }
+`
+const DELETE_CASE = gql`
+    mutation DeleteCase($id: ID!) {
+        deleteCase(id: $id) {
             id
             status
             customer {
@@ -507,6 +646,9 @@ export class KycCaseManagementGraphql implements KycCaseManagementApi {
                 query: CASES_SUBSCRIPTION
             })
             .map((config: FetchResult<{subscribeToCases: KycCaseModel[]}>) => {
+                if (config.errors) {
+                    console.error('Errors: ', {errors: config.errors})
+                }
                 console.log('Mapping data', {data: config.data})
                 return config.data?.subscribeToCases
             })
@@ -648,6 +790,38 @@ export class KycCaseManagementGraphql implements KycCaseManagementApi {
 
                 return result.data?.processCase
             }) as Promise<KycCaseModel>
+    }
+
+    deleteCase(id: string): Promise<KycCaseModel> {
+        return this.client
+            .mutate<{deleteCase: KycCaseModel}>({
+                mutation: DELETE_CASE,
+                variables: {id},
+                refetchQueries: [{query: LIST_CASES}, this.buildGetCaseQuery(id)],
+                awaitRefetchQueries: true
+            })
+            .then(async (result: FetchResult<{deleteCase: KycCaseModel}>) => {
+                this.caseNotifySubject.next(result.data?.deleteCase.id || '');
+
+                return result.data?.deleteCase
+            }) as Promise<KycCaseModel>
+    }
+
+    watchCase(id: string): Observable<KycCaseModel> {
+        const subject: Subject<KycCaseModel> = new Subject();
+
+        this.client
+            .subscribe<{watchCase: KycCaseModel}>({
+                query: WATCH_CASE,
+                variables: {id},
+            })
+            .map((config: FetchResult<{watchCase: KycCaseModel}>) => {
+                console.log('Mapping data', {data: config.data})
+                return config.data?.watchCase
+            })
+            .subscribe(subject)
+
+        return subject
     }
 
 }

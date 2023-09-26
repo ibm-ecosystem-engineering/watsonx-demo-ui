@@ -1,11 +1,11 @@
-import {BehaviorSubject, Observable} from "rxjs";
+import {BehaviorSubject, Observable, Subject} from "rxjs";
 
 import {CaseNotFound, KycCaseManagementApi} from "./kyc-case-management.api";
 import {
     ApproveCaseModel,
     createNewCase,
     CustomerModel, DocumentContent,
-    DocumentModel, DocumentRef, DocumentStream, isDocumentContent, isDocumentRef,
+    DocumentModel, DocumentRef, DocumentStream, isDocumentContent, isDocumentRef, KycCaseChangeEventModel,
     KycCaseModel,
     ReviewCaseModel
 } from "../../models";
@@ -41,6 +41,7 @@ const initialValue: KycCaseModel[] = [
 
 export class KycCaseManagementMock implements KycCaseManagementApi {
     subject: BehaviorSubject<KycCaseModel[]> = new BehaviorSubject(initialValue)
+    changeSubject: Subject<KycCaseChangeEventModel> = new Subject();
 
     async listCases(): Promise<KycCaseModel[]> {
         return delay(1000, () => this.subject.value);
@@ -72,6 +73,7 @@ export class KycCaseManagementMock implements KycCaseManagementApi {
         const updatedData = currentData.concat(newCase);
         console.log('Updated data on create case: ', updatedData);
         this.subject.next(updatedData);
+        this.changeSubject.next({event: 'created', kycCase: newCase});
 
         return newCase;
     }
@@ -89,6 +91,7 @@ export class KycCaseManagementMock implements KycCaseManagementApi {
         currentCase.documents.push(doc);
 
         this.subject.next(this.subject.value);
+        this.changeSubject.next({event: 'updated', kycCase: currentCase});
 
         return doc;
     }
@@ -114,6 +117,7 @@ export class KycCaseManagementMock implements KycCaseManagementApi {
         Object.assign(currentCase, {reviewCase}, {status});
 
         this.subject.next(this.subject.value);
+        this.changeSubject.next({event: 'updated', kycCase: currentCase});
 
         return currentCase;
     }
@@ -126,6 +130,7 @@ export class KycCaseManagementMock implements KycCaseManagementApi {
         currentCase.documents = currentCase.documents.concat(input.documents)
 
         this.subject.next(this.subject.value);
+        this.changeSubject.next({event: 'updated', kycCase: currentCase});
 
         return currentCase;
     }
@@ -151,6 +156,7 @@ export class KycCaseManagementMock implements KycCaseManagementApi {
             .filter(doc => doc.id !== documentId)
 
         this.subject.next(this.subject.value);
+        this.changeSubject.next({event: 'updated', kycCase: currentCase});
 
         return currentCase;
     }
@@ -160,5 +166,36 @@ export class KycCaseManagementMock implements KycCaseManagementApi {
 
     async processCase() {
         return undefined
+    }
+
+    async deleteCase(id: string): Promise<KycCaseModel> {
+        const cases = this.subject.value;
+
+        const index = cases.map(val => val.id).indexOf(id);
+
+        const deleted = first(cases.splice(index, 1)).get();
+
+        this.subject.next(cases);
+        this.changeSubject.next({event: 'deleted', kycCase: deleted});
+
+        return deleted;
+    }
+
+    watchCase(id: string): Observable<KycCaseModel> {
+        const subject: BehaviorSubject<KycCaseModel> = new BehaviorSubject<KycCaseModel>(undefined);
+
+        this.getCase(id).then(kycCase => {
+            subject.next(kycCase);
+
+            this.changeSubject.subscribe({
+                next: event => {
+                    if (event.kycCase.id === id) {
+                        subject.next(event.kycCase)
+                    }
+                }
+            })
+        })
+
+        return subject;
     }
 }

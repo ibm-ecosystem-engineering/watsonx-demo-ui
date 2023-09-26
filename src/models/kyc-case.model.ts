@@ -169,3 +169,9 @@ export const createEmptyApproveCase = (id: string): ApproveCaseModel => {
 export interface DocumentedCase {
     documents: DocumentModel[];
 }
+
+export type KycCaseChangeType = 'created' | 'updated' | 'deleted';
+export interface KycCaseChangeEventModel {
+    event: KycCaseChangeType;
+    kycCase: KycCaseModel;
+}

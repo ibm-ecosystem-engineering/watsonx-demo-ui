@@ -30,3 +30,29 @@ export const selectedKycCaseAtom = atom<Promise<KycCaseModel | undefined>, CaseI
 );
 
 export const selectedKycCaseAtomLoadable = loadable(selectedKycCaseAtom);
+
+export const watchSelectedKycCaseAtom = atom(
+    get => get(selectedKycCaseAtom),
+    async (_get, set, caseId: CaseInput) => {
+
+        const service = kycCaseManagementApi();
+
+        set(selectedKycCaseAtom, caseId)
+
+        const result = (typeof caseId === 'string') ? service.getCase(caseId) : Promise.resolve(caseId);
+
+        const kycCase = await result;
+
+        if (kycCase !== undefined) {
+            service.watchCase(kycCase.id)
+                .subscribe({
+                    next: kycCase => {
+                        console.log('Case change')
+                        set(selectedKycCaseAtom, kycCase)
+                    },
+                    error: err => console.error('Error watching case: ', {err}),
+                    complete: () => console.log('Complete')
+                })
+        }
+    }
+)

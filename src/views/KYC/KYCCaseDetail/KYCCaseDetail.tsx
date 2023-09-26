@@ -10,7 +10,7 @@ import {KYCCaseNew} from "./KYCCaseNew";
 import {KYCCasePending} from "./KYCCasePending";
 import {KYCCaseReview} from "./KYCCaseReview";
 import {KYCCaseCompleted} from "./KYCCaseCompleted";
-import {selectedKycCaseAtom, selectedKycCaseAtomLoadable} from "../../../atoms";
+import {selectedKycCaseAtomLoadable, watchSelectedKycCaseAtom} from "../../../atoms";
 import {KycCaseModel} from "../../../models";
 import {KYCCaseOutreach} from "./KYCCaseOutreach";
 
@@ -22,7 +22,7 @@ export const KYCCaseDetail: React.FunctionComponent<KYCCaseDetailProps> = (props
     const { id } = useParams();
     const navigate = useNavigate();
     const selectedCaseLoadable = useAtomValue(selectedKycCaseAtomLoadable);
-    const setSelectedCase = useSetAtom(selectedKycCaseAtom);
+    const setSelectedCase = useSetAtom(watchSelectedKycCaseAtom);
 
     if (selectedCaseLoadable.state === 'loading') {
         return (

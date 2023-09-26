@@ -10,6 +10,7 @@ export interface NavigationModel {
 export interface GlobalBarModel {
     title: string
     action: JSX.Element
+    onClick?: () => void
 }
 
 export const isMenuLinkModel = (item: MenuModel): item is MenuLinkModel => {
