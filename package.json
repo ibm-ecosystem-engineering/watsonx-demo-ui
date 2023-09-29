@@ -17,7 +17,7 @@
     "@carbon/react": "^1.38.0",
     "@ibm-watson/assistant-web-chat-react": "^1.0.4",
     "dayjs": "^1.11.10",
-    "graphql-ws": "^5.14.0",
+    "graphql-ws": "^5.14.1",
     "jotai": "^2.4.2",
     "optional-js": "^2.3.0",
     "react": "^18.2.0",
