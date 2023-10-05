@@ -13,7 +13,7 @@
     "@apollo/client": "^3.8.4",
     "@carbon/charts-react": "^1.13.4",
     "@carbon/grid": "^11.20.0",
-    "@carbon/icons-react": "^11.27.0",
+    "@carbon/icons-react": "^11.28.0",
     "@carbon/react": "^1.38.0",
     "@ibm-watson/assistant-web-chat-react": "^1.0.4",
     "dayjs": "^1.11.10",
