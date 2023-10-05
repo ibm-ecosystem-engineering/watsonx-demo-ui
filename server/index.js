@@ -22,6 +22,22 @@ const BACKEND_HOST = process.env.BACKEND_HOST || 'localhost:3000'
 const PORT = process.env.PORT || '8080'
 const HOST = process.env.HOST || 'http://localhost:8080'
 
+const buildAppIdConfig = () => {
+  const result = {
+    clientId: process.env.APPID_CLIENT_ID,
+    tenantId: process.env.APPID_TENANT_ID,
+    secret: process.env.APPID_SECRET,
+    oAuthServerUrl: process.env.OAUTH_SERVER_URL,
+    redirectUri: `${HOST}${CALLBACK_URL}`
+  }
+
+  if (!result.clientId || !result.tenantId || !result.secret || !result.oAuthServerUrl) {
+    throw new Error('APPID_CLIENT_ID, APPID_TENANT_ID, APPID_SECRET, or OAUTH_SERVER_URL environment variable missing')
+  }
+
+  return result;
+}
+
 const COOKIE_NAME = 'refreshToken'
 
 const createServer = () => {
@@ -34,13 +50,7 @@ const createServer = () => {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const webAppStrategy = new WebAppStrategy({
-    clientId: "59ce4a7b-a417-461b-a491-14c647e22b6f",
-    tenantId: "cefd8632-e25b-4b75-9077-a8b6952d39f4",
-    secret: '',
-    oAuthServerUrl: "https://us-south.appid.cloud.ibm.com/oauth/v4/cefd8632-e25b-4b75-9077-a8b6952d39f4",
-    redirectUri: `${HOST}${CALLBACK_URL}`,
-  })
+  const webAppStrategy = new WebAppStrategy(buildAppIdConfig())
 
   passport.use(webAppStrategy);
 
