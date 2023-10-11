@@ -18,6 +18,7 @@ import {
     KYCCaseDetail,
     KYCCaseList,
     KycSummarize,
+    NegativeNewsView,
     RTCQC,
     Utilities,
     Welcome
@@ -48,6 +49,7 @@ function App() {
         {title: 'RTC - QC', href: '/secure/rtc-qc', element: <RTCQC /> },
         {title: 'KYC Summarization', href: '/secure/kyc-summarization', element: <KycSummarize /> },
         {title: 'KYC Summarize', href: '/secure/kyc-summarize', excludeFromMenu: true, element: <KycSummarizeNative returnUrl="/secure/kyc-summarization" /> },
+        {title: 'Negative News', href: '/secure/negative-news', excludeFromMenu: true, element: <NegativeNewsView returnUrl="/secure/utilities" /> },
         {
             title: 'Utilities',
             href: '/secure/utilities',

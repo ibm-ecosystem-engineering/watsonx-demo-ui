@@ -16,6 +16,11 @@ export interface KycCaseModel {
 export interface PersonModel {
     name: string;
     countryOfResidence: string;
+    dateOfBirth?: string;
+}
+
+export const isPersonModel = (val: unknown): val is PersonModel => {
+    return !!val && !!(val as PersonModel).name && !!(val as PersonModel).countryOfResidence;
 }
 
 export interface CustomerModel extends PersonModel {

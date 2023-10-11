@@ -3,3 +3,4 @@ export * from './menu-options';
 export * from './data-extraction';
 export * from './file-upload';
 export * from './login';
+export * from './negative-news';
