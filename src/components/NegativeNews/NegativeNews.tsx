@@ -12,6 +12,7 @@ export interface NegativeNewsProps {
     type: string;
     hideTitle?: boolean;
     news?: NegativeScreeningModel;
+    subject: string;
 }
 
 const NewsItems = (props: {items?: NewsItemModel[], title: string}) => {
@@ -99,7 +100,7 @@ export const NegativeNews: React.FunctionComponent<NegativeNewsProps> = (props: 
             return (<p>'Error'</p>)
         }
 
-        return (<NegativeNewsSummary news={props.news} subject={props.news.subject} />)
+        return (<NegativeNewsSummary news={props.news} subject={props.subject} />)
     }
 
     return (

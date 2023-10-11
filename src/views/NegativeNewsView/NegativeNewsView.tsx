@@ -30,7 +30,7 @@ export const NegativeNewsView: React.FunctionComponent<NegativeNewsViewProps> = 
             <NegativeNewsInputs returnUrl={props.returnUrl} party={party} onSubmit={handleSubmit} />
             {loadable.state === 'loading' ? <Loading active={true} description="Loading negative news" id="negative-news-loading" withOverlay={false} /> : <></>}
             {loadable.state === 'hasError' ? <div>Error: {loadable.error.toString()}</div> : <></>}
-            {news ? <NegativeNews type="Party" news={news} hideTitle={true} /> : <></>}
+            {news ? <NegativeNews type="Party" subject={party.name} news={news} hideTitle={true} /> : <></>}
         </Stack>
     )
 }
