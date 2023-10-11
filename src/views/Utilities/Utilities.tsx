@@ -27,6 +27,7 @@ export const Utilities: React.FunctionComponent<UtilitiesProps> = () => {
     return (
         <DemoTileContainer>
             <DemoTile title="Data Extraction and Population" href="/secure/utilities/data-extraction" />
+            <DemoTile title="Negative News Screening (Native)" href="/secure/negative-news" />
             <DemoTile title="Negative News Screening" href={menuConfig.negativeNewsScreeningUrl} />
         </DemoTileContainer>
     )

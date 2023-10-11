@@ -7,3 +7,4 @@ export * from './dashboard.atom';
 export * from './current-user.atom';
 export * from './navigation.atom';
 export * from './kyc-case-summary.atom';
+export * from './negative-news.atom';
