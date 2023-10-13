@@ -11,7 +11,7 @@ import {
     FormGroup,
     Grid,
     Loading,
-    TextInput
+    TextInput, Toggle
 } from "@carbon/react";
 
 import './DataExtraction.scss';
@@ -186,6 +186,7 @@ const DataExtractionInternal: React.FunctionComponent<DataExtractionProps> = () 
 }
 
 const DataExtractionResults = () => {
+    const [showPrompt, setShowPrompt] = useState<boolean>(true)
     const resultsLoadable = useAtomValue(dataExtractionResultsAtomLoadable)
 
     if (resultsLoadable.state === 'loading') {
@@ -205,13 +206,13 @@ const DataExtractionResults = () => {
 
     const headerData: DataTableHeader[] = [
         {header: 'Question', key: 'question'},
-        // {header: 'Prompt', key: 'prompt'},
+        showPrompt ? {header: 'Prompt', key: 'prompt'} : undefined,
         {header: 'WatsonX Response', key: 'watsonxResponse'}
-    ]
+    ].filter(val => !!val)
 
     return (
         <div className="dataExtractionResultContainer">
-            <h3>Results</h3>
+            <div style={{display: 'flex', paddingBottom: '10px'}}><div style={{flex: 'auto', fontWeight: 'bolder', justifyContent: 'flex-start', paddingTop: '5px', textAlign: 'left'}}>Results</div><div style={{flex: 'auto', justifyContent: 'flex-end'}}><Toggle id="promptToggle" labelA="Prompt hidden" labelB="Prompt shown" onClick={() => setShowPrompt(!showPrompt)} toggled={showPrompt} /></div></div>
             <DataTable headerData={headerData} rowData={results} />
         </div>
     )
