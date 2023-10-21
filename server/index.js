@@ -103,9 +103,17 @@ const createServer = () => {
   app.get(LOGOUT2_URL, logout);
 
   const apiProxy = proxy(BACKEND_HOST, {
-    proxyReqPathResolver: req => url.parse(req.baseUrl).path
+    proxyReqPathResolver: req => {
+      const origPath = url.parse(req.baseUrl).path
+
+      const path = origPath.replace(/^\/api/, '')
+      console.log(`Proxy path: ${origPath} -> ${path}`)
+
+      return path
+    }
   });
   app.use('/api/*', apiProxy);
+  app.use('/api', apiProxy);
 
   const graphqlProxy = proxy(`${BACKEND_HOST}/graphql`, {
     proxyReqPathResolver: req => url.parse(req.baseUrl).path
